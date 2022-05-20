@@ -9,7 +9,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/overview")
@@ -152,6 +155,105 @@ public class OverviewController {
 
         }
         catch (Exception e) {
+
+            return ApiErrorHandling.genericApiError(e);
+
+        }
+    }
+
+    @GetMapping("/all")
+    private ResponseEntity<?> getAllStockData () {
+        try {
+
+            Iterable<Overview> allStockData= overviewRepository.findAll();
+
+            return new ResponseEntity<>(allStockData, HttpStatus.OK);
+
+        } catch (Exception e) {
+
+            return ApiErrorHandling.genericApiError(e);
+
+        }
+    }
+
+    @GetMapping("/stockid/{id}")
+    private ResponseEntity<?> getStockId (@PathVariable String id) {
+        try {
+
+            Optional<Overview> stockId = overviewRepository.findById(Long.parseLong(id));
+
+           if (stockId.isEmpty()) {
+
+                return ApiErrorHandling.customApiError("did not match any overview", HttpStatus.NOT_FOUND);
+
+            }
+
+            return ResponseEntity.ok(stockId);
+
+        } catch (NumberFormatException e) {
+
+           return ApiErrorHandling.customApiError("ID Must be a number " + id, HttpStatus.BAD_REQUEST);
+
+        }
+        catch (Exception e) {
+
+           return ApiErrorHandling.genericApiError(e);
+
+        }
+    }
+
+    @DeleteMapping("/all")
+    private ResponseEntity<?> deleteAllStockData () {
+        try {
+
+            Long deleteStockData= overviewRepository.count();
+
+            if (deleteStockData == 0) {
+
+                return ResponseEntity.ok("No Stock To Delete");
+
+            }
+
+            overviewRepository.deleteAll();
+
+            return ResponseEntity.ok("Deleted all stocks: " + deleteStockData);
+
+        } catch (HttpClientErrorException e) {
+
+            return ApiErrorHandling.customApiError(e.getMessage(), e.getStatusCode());
+
+        }
+
+        catch (Exception e) {
+
+            return ApiErrorHandling.genericApiError(e);
+
+        }
+    }
+
+    @DeleteMapping("/stockid/{id}")
+    private ResponseEntity<?> deleteStockId (@PathVariable String id) {
+        try  {
+
+            long stockIdValue = Long.parseLong(id);
+
+            Optional<Overview> stockId = overviewRepository.findById(Long.parseLong(id));
+
+        if (stockId.isEmpty()) {
+
+            return ApiErrorHandling.customApiError("did not match any overview", HttpStatus.NOT_FOUND);
+
+        }
+
+        overviewRepository.deleteById(stockIdValue);
+
+        return ResponseEntity.ok(stockId);
+
+    } catch (NumberFormatException e) {
+
+        return ApiErrorHandling.customApiError("ID Must be a number " + id, HttpStatus.BAD_REQUEST);
+
+    } catch (Exception e) {
 
             return ApiErrorHandling.genericApiError(e);
 
