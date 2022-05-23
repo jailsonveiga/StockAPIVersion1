@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -200,6 +201,62 @@ public class OverviewController {
            return ApiErrorHandling.genericApiError(e);
 
         }
+    }
+
+    @GetMapping("/stocksymbol/{symbol}")
+    private ResponseEntity<?> getStockSymbol (@PathVariable String symbol) {
+
+        try {
+
+            Optional<Overview> stockId = overviewRepository.findBySymbol(symbol);
+
+            if (stockId == null) {
+
+                return ApiErrorHandling.customApiError("did not match any overview", HttpStatus.NOT_FOUND);
+
+            }
+
+            return ResponseEntity.ok(stockId);
+
+        } catch (NumberFormatException e) {
+
+            return ApiErrorHandling.customApiError("ID Must be a number " + symbol, HttpStatus.BAD_REQUEST);
+
+        }
+        catch (Exception e) {
+
+            return ApiErrorHandling.genericApiError(e);
+
+        }
+
+    }
+
+    @GetMapping("/stockexchange/{exchange}")
+    private ResponseEntity<?> getStockExchange (@PathVariable String exchange) {
+
+        try {
+
+            List<Overview> stockId = overviewRepository.findByExchange(exchange);
+
+            if (stockId == null) {
+
+                return ApiErrorHandling.customApiError("did not match any overview", HttpStatus.NOT_FOUND);
+
+            }
+
+            return ResponseEntity.ok(stockId);
+
+        } catch (NumberFormatException e) {
+
+            return ApiErrorHandling.customApiError("ID Must be a number " + exchange, HttpStatus.BAD_REQUEST);
+
+        }
+        catch (Exception e) {
+
+            return ApiErrorHandling.genericApiError(e);
+
+        }
+
     }
 
     @DeleteMapping("/all")
