@@ -12,4 +12,6 @@ public interface OverviewRepository extends CrudRepository<Overview, Long> {
 
     public List<Overview> findByExchange (String exchange);
 
+    public List<Overview> findBySector (String sector);
+
 }
