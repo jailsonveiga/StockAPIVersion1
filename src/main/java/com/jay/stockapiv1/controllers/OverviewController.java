@@ -259,6 +259,34 @@ public class OverviewController {
 
     }
 
+    @GetMapping("/stocksector/{sector}")
+    private ResponseEntity<?> getStockSector (@PathVariable String sector) {
+
+        try {
+
+            List<Overview> stockId = overviewRepository.findBySector(sector);
+
+            if (stockId == null) {
+
+                return ApiErrorHandling.customApiError("did not match any overview", HttpStatus.NOT_FOUND);
+
+            }
+
+            return ResponseEntity.ok(stockId);
+
+        } catch (NumberFormatException e) {
+
+            return ApiErrorHandling.customApiError("ID Must be a number " + sector, HttpStatus.BAD_REQUEST);
+
+        }
+        catch (Exception e) {
+
+            return ApiErrorHandling.genericApiError(e);
+
+        }
+
+    }
+
     @DeleteMapping("/all")
     private ResponseEntity<?> deleteAllStockData () {
         try {
