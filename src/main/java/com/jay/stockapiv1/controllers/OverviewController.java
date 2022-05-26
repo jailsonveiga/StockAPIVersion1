@@ -287,8 +287,35 @@ public class OverviewController {
 
     }
 
+    @GetMapping("/stockname/{name}")
+    private ResponseEntity<?> getStockName (@PathVariable String name) {
 
-    @GetMapping("/stockcountry/{country}")
+        try {
+
+            List<Overview> stockId = overviewRepository.findByName(name);
+
+            if (stockId == null) {
+
+                return ApiErrorHandling.customApiError("did not match any overview", HttpStatus.NOT_FOUND);
+
+            }
+
+            return ResponseEntity.ok(stockId);
+
+        } catch (NumberFormatException e) {
+
+            return ApiErrorHandling.customApiError("ID Must be a number " + name, HttpStatus.BAD_REQUEST);
+
+        }
+        catch (Exception e) {
+
+            return ApiErrorHandling.genericApiError(e);
+
+        }
+
+    }
+
+    @GetMapping("/stockcontry/{country}")
     private ResponseEntity<?> getStockCountry (@PathVariable String country) {
 
         try {
