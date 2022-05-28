@@ -343,6 +343,34 @@ public class OverviewController {
 
     }
 
+    @GetMapping("/stockcurrency/{currency}")
+    private ResponseEntity<?> getStockCurrency (@PathVariable String currency) {
+
+        try {
+
+            List<Overview> stockId = overviewRepository.findByCurrency(currency);
+
+            if (stockId == null) {
+
+                return ApiErrorHandling.customApiError("did not match any overview", HttpStatus.NOT_FOUND);
+
+            }
+
+            return ResponseEntity.ok(stockId);
+
+        } catch (NumberFormatException e) {
+
+            return ApiErrorHandling.customApiError("ID Must be a number " + currency, HttpStatus.BAD_REQUEST);
+
+        }
+        catch (Exception e) {
+
+            return ApiErrorHandling.genericApiError(e);
+
+        }
+
+    }
+
 
 
     @DeleteMapping("/all")
