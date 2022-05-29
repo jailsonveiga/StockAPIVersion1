@@ -292,7 +292,7 @@ public class OverviewController {
 
         try {
 
-            List<Overview> stockId = overviewRepository.findByName(name);
+            Optional<Overview> stockId = overviewRepository.findByName(name);
 
             if (stockId == null) {
 
