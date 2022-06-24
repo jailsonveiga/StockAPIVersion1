@@ -183,7 +183,7 @@ public class OverviewController {
 
             Optional<Overview> stockId = overviewRepository.findById(Long.parseLong(id));
 
-           if (stockId.isEmpty()) {
+            if (stockId.isEmpty()) {
 
                 return ApiErrorHandling.customApiError("did not match any overview", HttpStatus.NOT_FOUND);
 
@@ -193,12 +193,12 @@ public class OverviewController {
 
         } catch (NumberFormatException e) {
 
-           return ApiErrorHandling.customApiError("ID Must be a number " + id, HttpStatus.BAD_REQUEST);
+            return ApiErrorHandling.customApiError("ID Must be a number " + id, HttpStatus.BAD_REQUEST);
 
         }
         catch (Exception e) {
 
-           return ApiErrorHandling.genericApiError(e);
+            return ApiErrorHandling.genericApiError(e);
 
         }
     }
@@ -410,25 +410,24 @@ public class OverviewController {
 
             Optional<Overview> stockId = overviewRepository.findById(Long.parseLong(id));
 
-        if (stockId.isEmpty()) {
+            if (stockId.isEmpty()) {
 
-            return ApiErrorHandling.customApiError("did not match any overview", HttpStatus.NOT_FOUND);
+                return ApiErrorHandling.customApiError("did not match any overview", HttpStatus.NOT_FOUND);
 
-        }
+            }
 
-        overviewRepository.deleteById(stockIdValue);
+            overviewRepository.deleteById(stockIdValue);
 
-        return ResponseEntity.ok(stockId);
+            return ResponseEntity.ok(stockId);
 
-    } catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
 
-        return ApiErrorHandling.customApiError("ID Must be a number " + id, HttpStatus.BAD_REQUEST);
+            return ApiErrorHandling.customApiError("ID Must be a number " + id, HttpStatus.BAD_REQUEST);
 
-    } catch (Exception e) {
+        } catch (Exception e) {
 
             return ApiErrorHandling.genericApiError(e);
 
         }
     }
 }
-
